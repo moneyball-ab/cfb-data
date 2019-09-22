@@ -1,10 +1,30 @@
+# College Football Data Class Module
+#
+# Author(s):        BDT
+# Developed:        09/02/2019
+# Last Updated:     09/21/2019
+# Version History:  [v01 09/02/2019] Prototype to get schedule and record info
+#                   [v02 09/21/2019] Rewrite for increased efficiency
+#
+# Purpose:          This script is used to establish the class objects
+#
+# Special Notes:    n/a
+#
+# Dev Backlog:      1) Rewrite code for added efficiency
+#                   2) Add comments
+
+# import cfb_func with custom path
 import sys, os
 sys.path.append(os.path.dirname(__file__))
+import cfb_func as cfb_data
 
-import cfb_data_v01 as cfb_data
-
+# import numpy to leverage np.where() for conditional df handling
 import numpy as np
 
+
+
+
+# protected properties, functions, and methods within the Base class
 class Base(object):
 
   def __init__(self, team1, game_yr, num_past_years, game_wk):
@@ -109,6 +129,11 @@ class Base(object):
     #self.seriesandrecordframe = self.seriesandrecordframe.merge(df_temp2_rec, how='inner', on='year')
     self.seriesandrecordframe = df3_temp
 
+
+    
+    
+    
+# this is the class used by the user, which instanciates a Base() class for protection
 class Schedule(Base):
 
   def __init__(self, team1, game_yr, num_past_years, game_wk=1):

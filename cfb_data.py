@@ -1,37 +1,63 @@
+# College Football Script
+#
+# Author(s):        BDT
+# Developed:        09/02/2019
+# Last Updated:     09/21/2019
+# Version History:  [v01 09/02/2019] Prototype to get schedule and record info
+#                   [v02 09/21/2019] Rewrite for increased efficiency
+#
+# Purpose:          This script is used to display schedule and record information
+#
+# Special Notes:    Requires college_football_data_class module
+#
+# Dev Backlog:      1) Rewrite code for added efficiency
+#                   2) Add comments
+#                   3) Incorporate better handling for deprecation and other warnings
+#                   4) Research importing all dependencies via module
+#                   5) Add support for config.ini to pull u/n and pass for sending email
+#                      and leverage git ignore list to prevent uploading credentials
+#                      to github
+#                   6) Install and leverage a local database for ingestion instead of
+#                      dataframes in local memory
+#                   7) Write function for following: When converting df.to_html(), use
+#                      string handling to incorporate <style> tags for better display
+
 #import dependencies
 import sys #This is used to set the sys path for importing the module
 #sys.path.append('./college_football_data_class') #This is where the module resides
 #from __init__ import Schedule #This is the module with classes related to cfb data
 import college_football_data_class as cfb_data #This is the module with classes related to cfb data
 
+# ignore deprecation warnings for now until able to incorporate better handling
 import warnings
 warnings.filterwarnings("ignore")
 
+# Needed for df handling
 import pandas as pd
 
+# Needed for datetime handling
 from datetime import datetime as dt
 
-import smtplib # used to send mail (which can be used for ATT service to send
-               # text messages as well using 10digitnumber@txt.att.net as the
-               # email address)
-
-#import more email functions
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email.mime.text import MIMEText
-from email.utils import COMMASPACE, formatdate
-from email import encoders
-
-
+# Eventually, will want to re-enable sending alert emails
+# once git ignore list and config.ini is usable
+#import smtplib
+#from email.mime.multipart import MIMEMultipart
+#from email.mime.base import MIMEBase
+#from email.mime.text import MIMEText
+#from email.utils import COMMASPACE, formatdate
+#from email import encoders
 
 
 time_now = dt.now()
 
+# Set list of teams to track
 team_list = ['Wake Forest','Florida State','Northwestern']
 
+# Initialize email body as empty string
 body_str = """
 """
 
+# Display information for each team in the team_list
 for team_item in team_list:
     #Run process on Wednesday morning only
     #if ((time_now.weekday() == 2) & (time_now.hour <= 11)):
