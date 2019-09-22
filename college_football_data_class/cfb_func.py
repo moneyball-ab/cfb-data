@@ -34,6 +34,21 @@ from_zone = tz.tzutc() #API datetimes are in UTC time
 to_zone = tz.tzlocal() #Used for converting to local timezone
 
 
+def get_full_year_schedule_all_teams(year):
+    r = requests.get('https://api.collegefootballdata.com/games?year=' + str(year)).json()
+
+    df = pd.DataFrame(r)
+    
+    df['start_time_dt'] = pd.to_datetime(df['start_date'].values, format=api_mask, utc=True).tz_convert(to_zone)
+    df['start_time_str'] = pd.to_datetime(df['start_date'].values, format=api_mask, utc=True).tz_convert(to_zone).strftime(readable_mask)
+    df['start_year_dtper'] = pd.to_datetime(df['start_date'].values, format=api_mask, utc=True).tz_convert(to_zone).to_period('Y')
+    df['start_year_int'] = df['start_year_dtper'].astype(int) + 1970
+    
+    return df
+
+
+
+
 # Original prototype function; deprecated; will be rewritten
 # Returns the opponent of a particular game
 def get_opponent(team1, game_yr, game_wk):
