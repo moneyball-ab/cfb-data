@@ -21,6 +21,43 @@
 #                      dataframes in local memory
 #                   7) Write function for following: When converting df.to_html(), use
 #                      string handling to incorporate <style> tags for better display
+#                   8) Trigger team_records_by_year() upon __init__() but handle cases
+#                      where team_list is empty to prevent index error on [0]
+
+
+# import dependencies
+import os, sys
+sys.path.append('./college_football_data_class/')
+import college_football_data_class as cfb_data
+
+# define teams to watch and
+# grab the last 5 years of college football schedule information
+team_list = ['Wake Forest', 'Florida State', 'Northwestern']
+mySchedule = cfb_data.Schedule(5, team_list)
+
+# show the schedule frame
+#print(mySchedule.df_multi_yr_schedule_all_teams)
+
+# show the class status log
+#mySchedule.show_status()
+
+# pull historical schedule data for watched teams
+mySchedule.team_records_by_year()
+
+# as example, show sched info for the first item from the team list
+print(mySchedule.team_schedule_frame_list[0])
+
+
+
+
+
+
+
+
+
+
+"""
+OLD SCRIPT CODE FOLLOWS:
 
 #import dependencies
 import sys #This is used to set the sys path for importing the module
@@ -29,8 +66,8 @@ import sys #This is used to set the sys path for importing the module
 import college_football_data_class as cfb_data #This is the module with classes related to cfb data
 
 # ignore deprecation warnings for now until able to incorporate better handling
-import warnings
-warnings.filterwarnings("ignore")
+#import warnings
+#warnings.filterwarnings("ignore")
 
 # Needed for df handling
 import pandas as pd
@@ -101,3 +138,4 @@ for team_item in team_list:
 
     
 print('\n\n\n --- --- --- \n\n\n')
+"""
