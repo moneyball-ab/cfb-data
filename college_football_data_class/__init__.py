@@ -12,6 +12,8 @@
 #
 # Dev Backlog:      1) Rewrite code for added efficiency
 #                   2) Add comments
+#                   3) Build record history for each team by year and for each team vs next opponent 
+#                      series over num_past_years
 
 # import cfb_func with custom path
 import sys, os
