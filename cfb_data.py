@@ -45,8 +45,14 @@ mySchedule = cfb_data.Schedule(5, team_list)
 mySchedule.team_records_by_year()
 
 # as example, show sched info for the first item from the team list
-print(mySchedule.team_schedule_frame_list[0])
+for i in range(len(mySchedule.html_next_game_info)):
+    print('NEXT GAME SCHEDULED FOR ' + mySchedule.team_schedule_frame_list[i]['my_team'].iloc[0])
+    print(mySchedule.html_next_game_info[i])
+    print('\n<br><br>\n')
 
+    print('LAST GAME RESULTS FOR ' + mySchedule.team_schedule_frame_list[i]['my_team'].iloc[0])
+    print(mySchedule.html_last_game_info[i])
+    print('\n<br><br>\n')
 
 
 

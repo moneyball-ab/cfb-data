@@ -69,21 +69,39 @@ class Base(object):
 
     def __TeamListRecordsByYear__(self):
 
+        #initialize the list that will hold the team schedule dfs
         self.team_schedule_frame_list = []
+        
+        #initialize the lists that will hold the HTML information
+        self.html_next_game_info = []
+        self.html_last_game_info = []
+        self.html_current_season_info = []
+        
+        #initialize the for loop counter
         count = 0
 
+        #iterate through the teams in the team watch list
         for team_item in self.team_list:
-            vars()["temp_df_"+str(count)] = self.df_multi_yr_schedule_all_teams.copy()
-            vars()["temp_df_"+str(count)] = vars()["temp_df_"+str(count)].copy()
+            #append the full all-team multi-year schedule to the list
+            self.team_schedule_frame_list.append(self.df_multi_yr_schedule_all_teams.copy())
             
-            self.team_schedule_frame_list.append(vars()["temp_df_"+str(count)])
+            #this line of code may seem redundant, but it clears the dreaded
+            #"copy of a slice of a copy of a whatever" warning
+            self.team_schedule_frame_list[count] = self.team_schedule_frame_list[count].copy()
 
+            #filter the current position of the list's df to just the current team_item
             self.team_schedule_frame_list[count] = self.team_schedule_frame_list[count][
                 (self.team_schedule_frame_list[count]['home_team']==team_item)
                 | (self.team_schedule_frame_list[count]['away_team']==team_item)
             ]
             
+            #add additional columns to the current position of the list's df
             self.team_schedule_frame_list[count]['my_team'] = team_item
+            self.team_schedule_frame_list[count]['opponent'] = np.where(
+                self.team_schedule_frame_list[count]['home_team'] == team_item,
+                self.team_schedule_frame_list[count]['away_team'],
+                self.team_schedule_frame_list[count]['home_team']
+            )
             self.team_schedule_frame_list[count]['team_pts'] = None
             self.team_schedule_frame_list[count]['opponent_pts'] = None
             
@@ -107,21 +125,133 @@ class Base(object):
                 self.team_schedule_frame_list[count]['home_points'],
                 self.team_schedule_frame_list[count]['opponent_pts']
             )
+            self.team_schedule_frame_list[count]['winner'] = np.where(
+                self.team_schedule_frame_list[count]['home_points'] > \
+                self.team_schedule_frame_list[count]['away_points'],
+                self.team_schedule_frame_list[count]['home_team'],
+                self.team_schedule_frame_list[count]['away_team']
+            )
             self.team_schedule_frame_list[count]['team_venue'] = np.where(
                 self.team_schedule_frame_list[count]['home_team'] == team_item,
                 'Home',
                 'Away'
             )
             self.team_schedule_frame_list[count]['team_win_bool'] = np.where(
-                self.team_schedule_frame_list[count]['team_pts'] > self.team_schedule_frame_list[count]['opponent_pts'],
+                self.team_schedule_frame_list[count]['team_pts'] > 
+                self.team_schedule_frame_list[count]['opponent_pts'],
                 1,
                 0
             )
             
-            count = count + 1
-        
+            self.team_schedule_frame_list[count]['is_current_season_bool'] = np.where(
+                (self.team_schedule_frame_list[count]['season'] == 
+                     self.team_schedule_frame_list[count][
+                         self.team_schedule_frame_list[count]['team_pts'] >= 0
+                     ].iloc[-1]['season']
+                ),
+                1,
+                0
+            )
 
-      
+            self.team_schedule_frame_list[count]['is_last_game_bool'] = np.where(
+                (self.team_schedule_frame_list[count]['team_pts'] >= 0) &
+                (self.team_schedule_frame_list[count]['week'] == 
+                     self.team_schedule_frame_list[count][
+                         self.team_schedule_frame_list[count]['team_pts'] >= 0
+                     ].iloc[-1]['week']
+                ) &
+                (self.team_schedule_frame_list[count]['season'] == 
+                     self.team_schedule_frame_list[count][
+                         self.team_schedule_frame_list[count]['team_pts'] >= 0
+                     ].iloc[-1]['season']
+                ),
+                1,
+                0
+            )
+
+            self.team_schedule_frame_list[count]['is_next_game_bool'] = np.where(
+                (self.team_schedule_frame_list[count]['team_pts'].isnull()) &
+                (self.team_schedule_frame_list[count]['week'] == 
+                     self.team_schedule_frame_list[count][
+                         self.team_schedule_frame_list[count]['team_pts'].isnull()
+                     ].iloc[0]['week']
+                ),
+                1,
+                0
+            )
+
+            #define the desired columns to be kept
+            columns_to_keep = [
+                #'id', 
+                'season', 
+                'week', 
+                'season_type', 
+                #'start_date', 
+                #'neutral_site',
+                #'conference_game', 
+                #'attendance', 
+                #'venue_id', 
+                #'venue', 
+                #'home_team',
+                #'home_conference', 
+                #'home_points', 
+                #'home_line_scores', 
+                #'away_team',
+                #'away_conference', 
+                #'away_points', 
+                #'away_line_scores', 
+                #'start_time_dt',
+                'start_time_str', 
+                #'start_year_dtper', 
+                'start_year_int',
+                #'on_team_watch_list', 
+                'my_team', 
+                'opponent',
+                'team_pts', 
+                'opponent_pts',
+                'winner',
+                'team_venue', 
+                'team_win_bool',
+                'is_current_season_bool',
+                'is_last_game_bool',
+                'is_next_game_bool'
+            ]
+            
+            #reduce the current list position's df down to just the desired columns
+            self.team_schedule_frame_list[count] = self.team_schedule_frame_list[count][columns_to_keep]
+            
+            
+            self.html_next_game_info.append('')
+            self.html_next_game_info[count] = self.html_next_game_info[count] + \
+            self.team_schedule_frame_list[count][
+                self.team_schedule_frame_list[count]['is_next_game_bool'] == 1][
+                ['season',
+                 'week',
+                 'start_time_str',
+                 'my_team',
+                 'opponent']
+                ].to_html(index=False).replace('\n','')
+
+            
+            self.html_last_game_info.append('')
+            self.html_last_game_info[count] = self.html_last_game_info[count] + \
+            self.team_schedule_frame_list[count][
+                self.team_schedule_frame_list[count]['is_last_game_bool'] == 1][
+                ['season',
+                 'week',
+                 'season_type',
+                 'start_time_str',
+                 'start_year_int',
+                 'my_team',
+                 'opponent',
+                 'team_pts',
+                 'opponent_pts',
+                 'winner',
+                 'team_venue']
+            ].to_html(index=False).replace('\n','')
+
+            #increment the for loop counter
+            count = count + 1
         
         
         
@@ -156,10 +286,10 @@ class Base(object):
         self.lcg_win_by = self.lastcompletedgameinfoframe['win_by']
         self.lcg_week = self.lastcompletedgameinfoframe['week']
 
-    def __findNextGameInfo__(self):
-        self.lastcompletedgameinfoframe = self.gameframe[~self.gameframe['pts_diff'].isna()].iloc[-1]
-        self.lcg_week = self.lastcompletedgameinfoframe['week']
-        self.nextgameinfoframe = self.gameframe[(self.gameframe['year']==self.game_yr) & (self.gameframe['week']==self.lcg_week+1)].iloc[-1]
+#    def __findNextGameInfo__(self):
+#        self.lastcompletedgameinfoframe = self.gameframe[~self.gameframe['pts_diff'].isna()].iloc[-1]
+#        self.lcg_week = self.lastcompletedgameinfoframe['week']
+#        self.nextgameinfoframe = self.gameframe[(self.gameframe['year']==self.game_yr) & (self.gameframe['week']==self.lcg_week+1)].iloc[-1]
 
     def __findSeriesRangeRecordSummary__(self):
         self.seriesrangerecordsummaryframe = self.seriesrangerecordframe[['year','week','venue','team_pts','opponent_pts','winner','team_win','win_by']]
