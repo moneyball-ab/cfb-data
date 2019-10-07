@@ -9,11 +9,11 @@ without the necessary values.<br>
 <br>
 Leverages:<br>
 - api.collegefootballdata.com for:<br>
-    o Ingestion of schedule data<br>
-    o Developer of that API can be found at www.github.com/BlueSCar<br>
+----o Ingestion of schedule data<br>
+----o Developer of that API can be found at www.github.com/BlueSCar<br>
 <br>
 - www.sports-reference.com for:<br>
-    o Ranking data<br>
-    o Developer of that API can be found at: www.github.com/roclark<br>
+----o Ranking data<br>
+----o Developer of that API can be found at: www.github.com/roclark<br>
 <br>
 Go Deacs!<br>
