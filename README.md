@@ -8,10 +8,12 @@ described in the comments in that file.  The code will not function
 without the necessary values.<br>
 <br>
 Leverages:<br>
-<li>api.collegefootballdata.com for:<br>
-----o Ingestion of schedule data<br>
-----o Developer of that API can be found at www.github.com/BlueSCar<br>
-<br>
+<li>api.collegefootballdata.com for:
+<ul>
+<li>Ingestion of schedule data
+<li>Developer of that API can be found at www.github.com/BlueSCar
+</ul>
+
 <li>www.sports-reference.com for:<br>
 ----o Ranking data<br>
 ----o Developer of that API can be found at: www.github.com/roclark<br>
