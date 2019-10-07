@@ -19,4 +19,5 @@ Leverages:
   <li>Ranking data
   <li>Developer of that API can be found at: www.github.com/roclark
   </ul>
+
 Go Deacs!
