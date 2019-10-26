@@ -17,11 +17,12 @@ outgoing email server for notifications. </p>
 
 <p>In the longer run, I would like to use this as stepping stone into
 a similar project for college basketball.  I'd also like to implement
-a database to handle record storage and processing.  However, my
-preference for a db is MySQL via Workbench, which is currently 
-unavailable for my OS (Raspbian Stretch).</p>
+a database to handle record storage and processing.  In late October,
+I selected MariaDB as the database solution (a MySQL replacement), 
+because I am using Raspbian Buster on an ARM architecture which has 
+limited my options.  Additionally, I am already familiar with the 
+assocaited Python packages used in a MySQL-enabled stack.</p>
 <br>
-
 
 <b>Cloning / Installation:</b>
 <p>When cloning this repo, ensure you rename config_template.ini to 
@@ -31,10 +32,11 @@ values.</p>
 <br>
 
 <b>Packages / Requirements:</b>
-<p>This repo is built to minimize specialty package requirements.
-If I've been successful, the code will not require any special
-package installations.  The following packages are used, but were
-pre-installed with my python 3.7 installation on Raspbian Stretch:</p>
+<p>This repo is built to minimize specialty package requirements. 
+If I've been successful, the code will not require any special 
+package installations to run the <i>notification processes</i>.  The 
+following packages are used, but were pre-installed with my 
+Python 3.7 installation on Raspbian Stretch:</p>
 <li>os
 <li>sys
 <li>configparser
@@ -45,6 +47,23 @@ pre-installed with my python 3.7 installation on Raspbian Stretch:</p>
 <li>smtplib
 <li>email
 <li>dateutil
+<br>
+
+<p>Note that as this project progresses into the future, there 
+will also be ingestion processes that will be used.  Those
+ingestion processes are expected to require the following:</p>
+<li>Python packages:
+  <ul>
+  <li>sqlalchemy
+  <li>mysql-connector
+  </ul>
+<li>Database:
+  <ul>
+  <li>MySQL or MariaDB database with write access
+  <li>A specail dbconfig.ini file to define 
+  connection params (not yet created in this 
+  project)
+  </ul>
 
 <b>This project gratefully leverages the following other projects:</b>
 <li>api.collegefootballdata.com for:
