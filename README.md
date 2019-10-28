@@ -1,5 +1,19 @@
 # cfb-data
 
+<h1>10/26/2019 SPECIAL NOTE:</h1>
+<p>One of the data sources for this project is 
+api.collegefootballdata.com which has been taken offline temporarily 
+due to a recent hacking incident.  The owner of that API provided 
+some information on reddit (link: 
+https://www.reddit.com/r/CFBAnalysis/comments/dnjxah/collegefootballdatacom_down_until_further_notice/ ). 
+While the data source is offline, I will be focusing on working on 
+one of my long-term goals, which is to establish a local database 
+and ingestion flow.  As a result, the code will be non-functional 
+for some unknown period of time (until the API is back online). 
+For reference, the API was taken offline on 10/26/2019 with the 
+expectation of it eventually being restored, but timelines are 
+not available at the time of writing this note.
+
 <b>Summary:</b>
 <p>Python code used to pull data related to FBS college football teams.</p>
 <br>
