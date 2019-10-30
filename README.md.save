@@ -1,8 +1,10 @@
 # cfb-data
 
-<h1>10/29/2019 SPECIAL NOTE:</h1>
-<p>The code is functional again due to restoration of the API that
-this code utilizes.</p>
+<h1>SPECIAL NOTE:</h1>
+<p>One of the data sources for this program is 
+api.collegefootballdata.com which has been taken offline temporarily 
+due to a recent hacking incident.  More information about this can 
+be found here: 
 
 <b>Summary:</b>
 <p>Python code used to pull data related to FBS college football teams.</p>
