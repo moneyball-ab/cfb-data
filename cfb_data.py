@@ -13,6 +13,7 @@ import os, sys
 sys.path.append('./college_football_data_class/')
 import college_football_data_class as cfb_data
 
+
 # grab the schedule information defined in config.ini
 mySchedule = cfb_data.Schedule()
 

@@ -100,6 +100,7 @@ class Schedule(object):
         #set up a coupleof  empty dataframes
         self.df_multi_yr_schedule_all_teams = pd.DataFrame()
         self.all_ranking_data = pd.DataFrame()
+        self.all_poll_data = pd.DataFrame()
         
         #for all years in range
         for year_item in range(self.current_year-self.num_past_years+1,
@@ -115,6 +116,9 @@ class Schedule(object):
             #for every week for each year in range
             self.all_ranking_data = self.all_ranking_data.append(
                 cfb_func.get_rankings_all_weeks(year_item)
+            )
+            self.all_poll_data = self.all_poll_data.append(
+                cfb_func.get_poll_data(year_item)
             )
 
         #merge the ranking data into self.df_multi_yr_schedule_all_teams

@@ -379,7 +379,7 @@ def get_rankings_all_weeks(year):
         'rank_chg',
         'conf',
         'sub_conf',
-        'record',        
+        'record'       
     ]
     df = df[sorted_cols]
 
@@ -403,3 +403,90 @@ def get_rankings_all_weeks(year):
 
     
     return df
+
+def get_poll_data(year):
+    #pull rankings data from sports-reference.com 
+    #for the given year as large HTML text string
+    r = requests.get(
+        'https://api.collegefootballdata.com/rankings?year=' + str(year) + '&seasonType=both'
+    ).json()
+
+    temp = pd.DataFrame(r)
+
+    temp2 = pd.DataFrame(temp['polls'][0])
+
+    temp3 = pd.DataFrame(temp2['ranks'][0])
+
+    full_df = pd.DataFrame()
+    for level_1_count in range(temp.index.stop):
+        temp2 = pd.DataFrame(temp['polls'].iloc[level_1_count])
+        for level_2_count in range(temp2.index.stop):
+            layer_2_df = pd.DataFrame(temp['polls'].iloc[level_1_count])
+            layer_3_df = pd.DataFrame(layer_2_df['ranks'].iloc[level_2_count])
+
+            layer_3_df['season'] = temp['season'].iloc[level_1_count].astype(int).round()
+            layer_3_df['week'] = temp['week'].iloc[level_1_count].astype(int).round()
+            layer_3_df['poll'] = temp2['poll'].iloc[level_2_count]
+
+            full_df = full_df.append(layer_3_df, sort=True)
+
+    full_df['season_week'] = full_df['season']*100 + full_df['week']
+    full_df['season_week'] = full_df['season_week'].astype(int).round()
+    full_df['series'] = np.where(
+        (full_df['poll'].apply(lambda x: str(x).find('FCS')) >= 0)
+        | (full_df['poll'].apply(lambda x: str(x).find('AFCA')) >= 0),
+        'FCS',
+        'FBS'
+    )
+
+    full_df['series_division'] = full_df['series']
+    full_df['series_division'] = np.where(
+        (full_df['series_division']=='FCS')
+        & (full_df['poll'].apply(lambda x: str(x).find(' II ')) >= 0),
+        full_df['series'] + ' D2',
+        full_df['series_division']
+    )
+    full_df['series_division'] = np.where(
+        (full_df['series_division']=='FCS')
+        & (full_df['poll'].apply(lambda x: str(x).find(' III ')) >= 0),
+        full_df['series'] + ' D3',
+        full_df['series_division']
+    )
+    full_df['is_playoff_poll'] = np.where(
+        (full_df['poll'].apply(lambda x: str(x).find('Playoff')) >= 0),
+        1,
+        0
+    )
+    full_df['series_division'] = np.where(
+        (full_df['series_division']=='FCS'),
+        'FCS D1',
+        full_df['series_division']
+    )
+    full_df['first_place_votes'] = full_df['firstPlaceVotes']
+    full_df['team'] = full_df['school']
+
+    full_df = full_df[[
+        'series_division',
+        'poll',
+        'season',
+        'week',
+        'season_week',
+        'rank',
+        'team',
+        'conference',
+        'first_place_votes',
+        'points',
+        'is_playoff_poll'
+    ]]
+
+
+    full_df = full_df.sort_values(
+        ['series_division','season','week','is_playoff_poll','poll','rank'], 
+        ascending=[True, False, False, False, True, True]
+    ).reset_index()
+
+    #print(full_df)
+
+    #db.ingest(full_df, 'cfb_rankings_c', 'replace')\
+    
+    return full_df
