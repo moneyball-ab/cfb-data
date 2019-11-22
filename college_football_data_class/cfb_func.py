@@ -400,7 +400,10 @@ def get_rankings_all_weeks(year):
             'record': str
         }
     )
-
+    
+    # TEMP FIX FOR PLAYOFF RANKING WEEK MISMATCH
+    df['week'] = df['week'] + 10
+    df['season_week'] = df['season_week'] + 10
     
     return df
 

@@ -139,7 +139,8 @@ class Schedule(object):
         #season & week ranking data
         self.current_ranking_data = self.all_ranking_data[
             (self.all_ranking_data['season_week'] == \
-             self.all_ranking_data['season_week'].max())
+             self.all_ranking_data['season_week'].max()
+            )
         ]
 
         #flag records in the schedule frame for teams on the watch list
@@ -356,6 +357,7 @@ class Schedule(object):
         df_series = self.df_multi_yr_schedule_all_teams.copy()
         df_series = df_series.copy() #suppress the copy/slice/copy warning
         
+        
         #create new fields used to calculate record
         df_series['series_team'] = series_team
         df_series['series_opponent'] = series_opponent
@@ -399,6 +401,17 @@ class Schedule(object):
             'Away'
         )
             
+        #print(1,df_series[df_series['home_team']==series_team])
+        #print(2,df_series[df_series['away_team']==series_team])
+
+        #print(3,df_series[df_series['home_team']==series_opponent])
+        #print(4,df_series[df_series['away_team']==series_opponent])
+        
+        #print(5,df_series[df_series['home_team'] != df_series['away_team']])
+        
+        #print(6,df_series[df_series['team_pts'] >= 0])
+
+        
         df_series = df_series[
             (
                 (df_series['home_team'] == series_team) |
@@ -416,6 +429,8 @@ class Schedule(object):
             )
         ]
         
+        #print(777,df_series)
+
         columns_to_keep = [
             'season',
             'week',
@@ -431,12 +446,18 @@ class Schedule(object):
 
         df_series = df_series[columns_to_keep]
         
-        df_series['game_count'] = df_series.groupby('series_team')['team_win_bool'].count().iloc[-1]
-        df_series['win_count'] = df_series.groupby('series_team')['team_win_bool'].sum().iloc[-1]
-        df_series['loss_count'] = df_series['game_count'] - df_series['win_count']
-        
-        win_loss_record = str(df_series['win_count'].iloc[-1]) + '-' + \
-        str(df_series['loss_count'].iloc[-1])
+        if len(df_series.index) == 0:
+            df_series['game_count'] = 0
+            df_series['win_count'] = 0
+            df_series['loss_count'] = 0
+            win_loss_record = '0-0'
+        else:
+            df_series['game_count'] = df_series.groupby('series_team')['team_win_bool'].count().iloc[-1]
+            df_series['win_count'] = df_series.groupby('series_team')['team_win_bool'].sum().iloc[-1]
+            df_series['loss_count'] = df_series['game_count'] - df_series['win_count']
+
+            win_loss_record = str(df_series['win_count'].iloc[-1]) + '-' + \
+            str(df_series['loss_count'].iloc[-1])
 
         columns_to_keep = [
             'season',
@@ -471,12 +492,19 @@ class Schedule(object):
             'opp_yr_rec'
         ]
 
-        new_df_series = new_df_series[columns_to_keep]
-
-        new_df_series['season'] = pd.to_numeric(new_df_series['season'], downcast='integer')
-        new_df_series['week'] = pd.to_numeric(new_df_series['week'], downcast='integer')
-        new_df_series['team_pts'] = pd.to_numeric(new_df_series['team_pts'], downcast='integer')
-        new_df_series['opponent_pts'] = pd.to_numeric(new_df_series['opponent_pts'], downcast='integer')
+        #print(len(df_series.index))
+        #print(df_series)
+        #print(len(new_df_series.index))
+        #print(new_df_series)
+        
+        if len(df_series.index) == 0:
+            pass
+        else:
+            new_df_series = new_df_series[columns_to_keep]
+            new_df_series['season'] = pd.to_numeric(new_df_series['season'], downcast='integer')
+            new_df_series['week'] = pd.to_numeric(new_df_series['week'], downcast='integer')
+            new_df_series['team_pts'] = pd.to_numeric(new_df_series['team_pts'], downcast='integer')
+            new_df_series['opponent_pts'] = pd.to_numeric(new_df_series['opponent_pts'], downcast='integer')
         
         return win_loss_record, new_df_series
 
