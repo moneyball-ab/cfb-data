@@ -1,8 +1,11 @@
 # cfb-data
 
-<h1>10/29/2019 SPECIAL NOTE:</h1>
-<p>The code is functional again due to restoration of the API that
-this code utilizes.</p>
+<h1>11/21/2019 SPECIAL NOTE:</h1>
+<p>This code has been broken for about a month until now.  It is working 
+again.  The issue was how I was calculating the series record for
+matchups between two teams that hadn't played against each other
+before (in the year range set in the config.ini).  This became an issue 
+when Georgia was scheduled against Texas A&M.</p>
 
 <b>Summary:</b>
 <p>Python code used to pull data related to FBS college football teams.</p>
